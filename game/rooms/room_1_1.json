@@ -1,0 +1,469 @@
+{
+  "room": [
+    1,
+    1
+  ],
+  "backgroundColor": "#f0f0f0",
+  "octagons": [
+    {
+      "id": "5,0",
+      "color": "#ff0080",
+      "gameObject": null
+    },
+    {
+      "id": "5,1",
+      "color": "#ff0080",
+      "gameObject": null
+    },
+    {
+      "id": "5,2",
+      "color": "#ff0080",
+      "gameObject": null
+    },
+    {
+      "id": "5,3",
+      "color": "#ff0080",
+      "gameObject": null
+    },
+    {
+      "id": "5,4",
+      "color": "#ff0080",
+      "gameObject": null
+    },
+    {
+      "id": "5,5",
+      "color": "#ff0080",
+      "gameObject": null
+    },
+    {
+      "id": "5,6",
+      "color": "#ff0080",
+      "gameObject": null
+    },
+    {
+      "id": "6,0",
+      "color": "#ff0080",
+      "gameObject": null
+    },
+    {
+      "id": "6,1",
+      "color": "#ff0080",
+      "gameObject": null
+    },
+    {
+      "id": "6,2",
+      "color": "#ff0080",
+      "gameObject": null
+    },
+    {
+      "id": "6,3",
+      "color": "#ff0080",
+      "gameObject": null
+    },
+    {
+      "id": "6,4",
+      "color": "#ff0080",
+      "gameObject": null
+    },
+    {
+      "id": "6,5",
+      "color": "#ff0080",
+      "gameObject": null
+    },
+    {
+      "id": "6,6",
+      "color": "#ff0080",
+      "gameObject": null
+    },
+    {
+      "id": "7,0",
+      "color": "#ff0080",
+      "gameObject": null
+    },
+    {
+      "id": "7,1",
+      "color": "#400080",
+      "gameObject": "🐺"
+    },
+    {
+      "id": "7,2",
+      "color": "#ff0080",
+      "gameObject": null
+    },
+    {
+      "id": "7,3",
+      "color": "#ff0080",
+      "gameObject": null
+    },
+    {
+      "id": "7,4",
+      "color": "#ff0080",
+      "gameObject": null
+    },
+    {
+      "id": "7,5",
+      "color": "#ff0080",
+      "gameObject": null
+    },
+    {
+      "id": "7,6",
+      "color": "#ff0080",
+      "gameObject": null
+    },
+    {
+      "id": "8,0",
+      "color": "#ff0080",
+      "gameObject": null
+    },
+    {
+      "id": "8,1",
+      "color": "#ff0080",
+      "gameObject": null
+    },
+    {
+      "id": "8,2",
+      "color": "#400080",
+      "gameObject": "🐺"
+    },
+    {
+      "id": "8,3",
+      "color": "#ff0080",
+      "gameObject": null
+    },
+    {
+      "id": "8,4",
+      "color": "#ff0080",
+      "gameObject": null
+    },
+    {
+      "id": "8,5",
+      "color": "#ff0080",
+      "gameObject": null
+    },
+    {
+      "id": "8,6",
+      "color": "#ff0080",
+      "gameObject": null
+    },
+    {
+      "id": "9,0",
+      "color": "#ff0080",
+      "gameObject": null
+    },
+    {
+      "id": "9,1",
+      "color": "#ff0080",
+      "gameObject": null
+    },
+    {
+      "id": "9,2",
+      "color": "#ff0080",
+      "gameObject": null
+    },
+    {
+      "id": "9,3",
+      "color": "#400080",
+      "gameObject": "🐺"
+    },
+    {
+      "id": "9,4",
+      "color": "#ff0080",
+      "gameObject": null
+    },
+    {
+      "id": "9,5",
+      "color": "#ff0080",
+      "gameObject": null
+    },
+    {
+      "id": "9,6",
+      "color": "#ff0080",
+      "gameObject": null
+    },
+    {
+      "id": "5,7",
+      "color": "#00ffff",
+      "gameObject": null
+    },
+    {
+      "id": "5,8",
+      "color": "#00ffff",
+      "gameObject": null
+    },
+    {
+      "id": "5,9",
+      "color": "#00ffff",
+      "gameObject": null
+    },
+    {
+      "id": "5,10",
+      "color": "#00ffff",
+      "gameObject": "🧙"
+    },
+    {
+      "id": "5,11",
+      "color": "#00ffff",
+      "gameObject": null
+    },
+    {
+      "id": "5,12",
+      "color": "#00ffff",
+      "gameObject": null
+    },
+    {
+      "id": "5,13",
+      "color": "#00ffff",
+      "gameObject": null
+    },
+    {
+      "id": "6,7",
+      "color": "#00ffff",
+      "gameObject": null
+    },
+    {
+      "id": "6,8",
+      "color": "#00ffff",
+      "gameObject": "🧙"
+    },
+    {
+      "id": "6,9",
+      "color": "#00ffff",
+      "gameObject": null
+    },
+    {
+      "id": "6,10",
+      "color": "#00ffff",
+      "gameObject": null
+    },
+    {
+      "id": "6,11",
+      "color": "#00ffff",
+      "gameObject": null
+    },
+    {
+      "id": "6,12",
+      "color": "#00ffff",
+      "gameObject": "🧙"
+    },
+    {
+      "id": "6,13",
+      "color": "#00ffff",
+      "gameObject": null
+    },
+    {
+      "id": "7,7",
+      "color": "#00ffff",
+      "gameObject": null
+    },
+    {
+      "id": "7,8",
+      "color": "#00ffff",
+      "gameObject": null
+    },
+    {
+      "id": "7,9",
+      "color": "#00ffff",
+      "gameObject": null
+    },
+    {
+      "id": "7,10",
+      "color": "#00ffff",
+      "gameObject": null
+    },
+    {
+      "id": "7,11",
+      "color": "#00ffff",
+      "gameObject": null
+    },
+    {
+      "id": "7,12",
+      "color": "#00ffff",
+      "gameObject": null
+    },
+    {
+      "id": "7,13",
+      "color": "#00ffff",
+      "gameObject": null
+    },
+    {
+      "id": "8,7",
+      "color": "#00ffff",
+      "gameObject": null
+    },
+    {
+      "id": "8,8",
+      "color": "#00ffff",
+      "gameObject": "🧙"
+    },
+    {
+      "id": "8,9",
+      "color": "#00ffff",
+      "gameObject": null
+    },
+    {
+      "id": "8,10",
+      "color": "#00ffff",
+      "gameObject": null
+    },
+    {
+      "id": "8,11",
+      "color": "#00ffff",
+      "gameObject": null
+    },
+    {
+      "id": "8,12",
+      "color": "#00ffff",
+      "gameObject": "🧙"
+    },
+    {
+      "id": "8,13",
+      "color": "#00ffff",
+      "gameObject": null
+    },
+    {
+      "id": "9,7",
+      "color": "#00ffff",
+      "gameObject": null
+    },
+    {
+      "id": "9,8",
+      "color": "#00ffff",
+      "gameObject": null
+    },
+    {
+      "id": "9,9",
+      "color": "#00ffff",
+      "gameObject": null
+    },
+    {
+      "id": "9,10",
+      "color": "#00ffff",
+      "gameObject": "🧙"
+    },
+    {
+      "id": "9,11",
+      "color": "#00ffff",
+      "gameObject": null
+    },
+    {
+      "id": "9,12",
+      "color": "#00ffff",
+      "gameObject": null
+    },
+    {
+      "id": "9,13",
+      "color": "#00ffff",
+      "gameObject": null
+    }
+  ],
+  "squares": [
+    {
+      "id": "5,0",
+      "color": "#400080"
+    },
+    {
+      "id": "5,1",
+      "color": "#400080"
+    },
+    {
+      "id": "5,2",
+      "color": "#400080"
+    },
+    {
+      "id": "5,3",
+      "color": "#400080"
+    },
+    {
+      "id": "5,4",
+      "color": "#400080"
+    },
+    {
+      "id": "5,5",
+      "color": "#400080"
+    },
+    {
+      "id": "6,0",
+      "color": "#400080"
+    },
+    {
+      "id": "6,1",
+      "color": "#400080"
+    },
+    {
+      "id": "6,2",
+      "color": "#400080"
+    },
+    {
+      "id": "6,3",
+      "color": "#400080"
+    },
+    {
+      "id": "6,4",
+      "color": "#400080"
+    },
+    {
+      "id": "6,5",
+      "color": "#400080"
+    },
+    {
+      "id": "7,0",
+      "color": "#400080"
+    },
+    {
+      "id": "7,1",
+      "color": "#400080"
+    },
+    {
+      "id": "7,2",
+      "color": "#400080"
+    },
+    {
+      "id": "7,3",
+      "color": "#400080"
+    },
+    {
+      "id": "7,4",
+      "color": "#400080"
+    },
+    {
+      "id": "7,5",
+      "color": "#400080"
+    },
+    {
+      "id": "8,0",
+      "color": "#400080"
+    },
+    {
+      "id": "8,1",
+      "color": "#400080"
+    },
+    {
+      "id": "8,2",
+      "color": "#400080"
+    },
+    {
+      "id": "8,3",
+      "color": "#400080"
+    },
+    {
+      "id": "8,4",
+      "color": "#400080"
+    },
+    {
+      "id": "8,5",
+      "color": "#400080"
+    }
+  ],
+  "sidewalls": {
+    "top": "#400080",
+    "right": "#400080",
+    "bottom": "#400080",
+    "left": "#400080"
+  },
+  "doors": {
+    "north": "Unlocked",
+    "south": "Unlocked",
+    "east": "Unlocked",
+    "west": "Unlocked"
+  }
+}

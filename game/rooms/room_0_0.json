@@ -1,0 +1,24 @@
+{
+    "room": [0, 0],
+    "backgroundColor": "#f0f0f0",
+    "octagons": [
+      { "id": "0,0", "color": "teal", "gameObject": "😆" },
+      { "id": "0,1", "color": "blue", "gameObject": null }
+    ],
+    "squares": [
+      { "id": "0,0", "color": "magenta" },
+      { "id": "0,1", "color": "purple" }
+    ],
+    "sidewalls": {
+      "top": "gray",
+      "right": "gray",
+      "bottom": "gray",
+      "left": "gray"
+    },
+    "doors": {
+      "north": "Unlocked",
+      "south": "Locked",
+      "east": "Unlocked",
+      "west": "No Door"
+    }
+  }

@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Game with Dynamic Rooms</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        #gameContainer {
+            position: relative;
+            display: inline-block;
+        }
+        #gameCanvas {
+            border: 1px solid #000;
+        }
+        #controls {
+            margin-top: 10px;
+            text-align: center;
+        }
+        #status {
+            margin-top: 10px;
+            font-size: 16px;
+        }
+        #hearts {
+            margin-top: 10px;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <canvas id="gameCanvas"></canvas>
+    </div>
+    <div id="controls">
+        <button onclick="move('north')">North</button>
+        <button onclick="move('south')">South</button>
+        <button onclick="move('east')">East</button>
+        <button onclick="move('west')">West</button>
+    </div>
+    <div id="status">Current Room: (0,0)</div>
+    <div id="hearts">❤️ ❤️ ❤️</div>
+
+    <script>
+        // Canvas setup
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Grid and octagon settings
+        const gridRows = 5;
+        const gridCols = 7;
+        const sideLength = 30;
+        const diagonalProjection = sideLength * Math.SQRT2 / 2;
+        const octagonSpan = sideLength + 2 * diagonalProjection;
+        const padding = diagonalProjection;
+        const sidewallThickness = 10;
+        const doorSize = 30;
+        const canvasWidth = gridCols * octagonSpan + 2 * padding;
+        const canvasHeight = gridRows * octagonSpan + 2 * padding;
+
+        // Handle device pixel ratio
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = canvasWidth * dpr;
+        canvas.height = canvasHeight * dpr;
+        canvas.style.width = `${canvasWidth}px`;
+        canvas.style.height = `${canvasHeight}px`;
+        ctx.scale(dpr, dpr);
+
+        // Door areas
+        const doorAreas = {
+            north: { x: (canvasWidth - doorSize) / 2, y: 0, width: doorSize, height: doorSize },
+            south: { x: (canvasWidth - doorSize) / 2, y: canvasHeight - doorSize, width: doorSize, height: doorSize },
+            east: { x: canvasWidth - doorSize, y: (canvasHeight - doorSize) / 2, width: doorSize, height: doorSize },
+            west: { x: 0, y: (canvasHeight - doorSize) / 2, width: doorSize, height: doorSize }
+        };
+
+        // Game state
+        const roomCache = new Map();
+        let currentRoom = null;
+        let currentX = 0;
+        let currentY = 0;
+        let playerPos = null;
+        let ghosts = [];
+        let hearts = 3;
+
+        // Load a room from JSON
+        async function loadRoom(x, y) {
+            try {
+                const response = await fetch(`rooms/room_${x}_${y}.json`);
+                if (!response.ok) throw new Error('Room not found');
+                const roomData = await response.json();
+                return roomData;
+            } catch (error) {
+                console.error(`Failed to load room ${x},${y}:`, error);
+                return null;
+            }
+        }
+
+        // Get or load a room, caching it
+        async function getRoom(x, y) {
+            const key = `${x},${y}`;
+            if (!roomCache.has(key)) {
+                const roomData = await loadRoom(x, y);
+                if (roomData) roomCache.set(key, roomData);
+            }
+            return roomCache.get(key);
+        }
+
+        // Preload adjacent rooms
+        async function preloadAdjacentRooms(x, y) {
+            const directions = [[0, 1], [0, -1], [1, 0], [-1, 0]];
+            for (const [dx, dy] of directions) {
+                await getRoom(x + dx, y + dy);
+            }
+        }
+
+        // Initialize the game
+        async function init() {
+            currentRoom = await getRoom(currentX, currentY);
+            if (currentRoom) {
+                await preloadAdjacentRooms(currentX, currentY);
+                setupRoom();
+                updateStatus();
+            } else {
+                document.getElementById('status').textContent = `Error: Room (${currentX},${currentY}) not found`;
+            }
+        }
+
+        // Move to a new room
+        async function move(direction) {
+            const doorState = currentRoom?.doors[direction];
+            if (doorState === 'Locked' || doorState === 'No Door') {
+                document.getElementById('status').textContent = `Cannot move ${direction}: Door is ${doorState}`;
+                return;
+            }
+
+            const directionMap = {
+                north: [0, 1],
+                south: [0, -1],
+                east: [1, 0],
+                west: [-1, 0]
+            };
+            const [dx, dy] = directionMap[direction];
+            const newX = currentX + dx;
+            const newY = currentY + dy;
+
+            const newRoom = await getRoom(newX, newY);
+            if (newRoom) {
+                currentRoom = newRoom;
+                currentX = newX;
+                currentY = newY;
+                await preloadAdjacentRooms(newX, newY);
+                setupRoom();
+                updateStatus();
+            } else {
+                document.getElementById('status').textContent = `Cannot move ${direction}: Room (${newX},${newY}) not found`;
+            }
+        }
+
+        // Update status display
+        function updateStatus() {
+            document.getElementById('status').textContent = `Current Room: (${currentX},${currentY})`;
+        }
+
+        // Setup room state
+        function setupRoom() {
+            findPlayerPosition();
+            initializeGhosts();
+            updateHeartsDisplay();
+            drawRoom(currentRoom);
+        }
+
+        // Find player position
+        function findPlayerPosition() {
+            const playerOctagon = currentRoom.octagons.find(o => o.gameObject === "🧙");
+            if (playerOctagon) {
+                const [row, col] = playerOctagon.id.split(',').map(Number);
+                playerPos = { row, col };
+            } else {
+                console.error("Player not found in room");
+                playerPos = { row: 2, col: 3 }; // Fallback position
+            }
+        }
+
+        // Initialize ghosts
+        function initializeGhosts() {
+            ghosts = currentRoom.octagons
+                .filter(o => o.gameObject === "👻")
+                .map(o => {
+                    const [row, col] = o.id.split(',').map(Number);
+                    return {
+                        pos: { row, col },
+                        state: 'pausing',
+                        pauseDuration: Math.floor(Math.random() * 3) + 1 // 1 to 3 turns
+                    };
+                });
+        }
+
+        // Update hearts display
+        function updateHeartsDisplay() {
+            document.getElementById('hearts').textContent = '❤️'.repeat(hearts);
+        }
+
+        // Direction vectors
+        const directionMap = {
+            north: { dRow: -1, dCol: 0 },
+            south: { dRow: 1, dCol: 0 },
+            east: { dRow: 0, dCol: 1 },
+            west: { dRow: 0, dCol: -1 }
+        };
+
+        // Move player within room
+        function movePlayer(direction) {
+            const { dRow, dCol } = directionMap[direction];
+            const newRow = playerPos.row + dRow;
+            const newCol = playerPos.col + dCol;
+
+            if (newRow >= 0 && newRow < gridRows && newCol >= 0 && newCol < gridCols) {
+                const targetOctagon = currentRoom.octagons.find(o => o.id === `${newRow},${newCol}`) || { gameObject: null };
+                if (!targetOctagon.gameObject) {
+                    const currentOctagon = currentRoom.octagons.find(o => o.id === `${playerPos.row},${playerPos.col}`);
+                    currentOctagon.gameObject = null;
+                    if (!targetOctagon.id) {
+                        currentRoom.octagons.push({ id: `${newRow},${newCol}`, color: 'teal', gameObject: "🧙" });
+                    } else {
+                        targetOctagon.gameObject = "🧙";
+                    }
+                    playerPos = { row: newRow, col: newCol };
+
+                    // Check collision
+                    if (ghosts.some(g => g.pos.row === newRow && g.pos.col === newCol)) {
+                        loseHeart();
+                    }
+
+                    // Update ghosts
+                    updateGhosts();
+                    drawRoom(currentRoom);
+                }
+            }
+        }
+
+        // Update ghost positions
+        function updateGhosts() {
+            ghosts.forEach(ghost => {
+                if (ghost.state === 'pausing') {
+                    ghost.pauseDuration--;
+                    if (ghost.pauseDuration <= 0) {
+                        ghost.state = 'moving';
+                    }
+                }
+                if (ghost.state === 'moving') {
+                    const directions = ['north', 'south', 'east', 'west'];
+                    shuffleArray(directions);
+                    for (const dir of directions) {
+                        const { dRow, dCol } = directionMap[dir];
+                        const newRow = ghost.pos.row + dRow;
+                        const newCol = ghost.pos.col + dCol;
+                        if (newRow >= 0 && newRow < gridRows && newCol >= 0 && newCol < gridCols) {
+                            const targetOctagon = currentRoom.octagons.find(o => o.id === `${newRow},${newCol}`) || { gameObject: null };
+                            if (!targetOctagon.gameObject) {
+                                const currentOctagon = currentRoom.octagons.find(o => o.id === `${ghost.pos.row},${ghost.pos.col}`);
+                                currentOctagon.gameObject = null;
+                                if (!targetOctagon.id) {
+                                    currentRoom.octagons.push({ id: `${newRow},${newCol}`, color: 'teal', gameObject: "👻" });
+                                } else {
+                                    targetOctagon.gameObject = "👻";
+                                }
+                                ghost.pos = { row: newRow, col: newCol };
+
+                                // Check collision with player
+                                if (newRow === playerPos.row && newCol === playerPos.col) {
+                                    loseHeart();
+                                }
+
+                                ghost.state = 'pausing';
+                                ghost.pauseDuration = Math.floor(Math.random() * 3) + 1;
+                                break;
+                            }
+                        }
+                    }
+                    if (ghost.state === 'moving') {
+                        ghost.state = 'pausing';
+                        ghost.pauseDuration = Math.floor(Math.random() * 3) + 1;
+                    }
+                }
+            });
+        }
+
+        // Lose a heart
+        function loseHeart() {
+            hearts--;
+            updateHeartsDisplay();
+            if (hearts <= 0) {
+                alert("Game Over");
+                // Optional: Reset game state here
+            }
+        }
+
+        // Shuffle array for random direction selection
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // Draw the room
+        function drawRoom(roomData) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = roomData.backgroundColor || '#f0f0f0';
+            ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+            ctx.fillStyle = roomData.sidewalls.top || 'gray';
+            ctx.fillRect(0, 0, canvasWidth, sidewallThickness);
+            ctx.fillStyle = roomData.sidewalls.right || 'gray';
+            ctx.fillRect(canvasWidth - sidewallThickness, 0, sidewallThickness, canvasHeight);
+            ctx.fillStyle = roomData.sidewalls.bottom || 'gray';
+            ctx.fillRect(0, canvasHeight - sidewallThickness, canvasWidth, sidewallThickness);
+            ctx.fillStyle = roomData.sidewalls.left || 'gray';
+            ctx.fillRect(0, 0, sidewallThickness, canvasHeight);
+
+            for (const [direction, area] of Object.entries(doorAreas)) {
+                const state = roomData.doors[direction] || 'Unlocked';
+                ctx.fillStyle = getDoorColor(state);
+                ctx.fillRect(area.x, area.y, area.width, area.height);
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 1;
+                ctx.strokeRect(area.x, area.y, area.width, area.height);
+                ctx.fillStyle = '#000';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(state, area.x + area.width / 2, area.y + area.height / 2);
+            }
+
+            const octagonMap = new Map(roomData.octagons.map(o => [o.id, o]));
+            for (let row = 0; row < gridRows; row++) {
+                for (let col = 0; col < gridCols; col++) {
+                    const id = `${row},${col}`;
+                    const data = octagonMap.get(id) || { color: 'teal', gameObject: null };
+                    const baseX = col * octagonSpan + padding;
+                    const baseY = row * octagonSpan + padding;
+                    const points = [
+                        { x: baseX, y: baseY + diagonalProjection },
+                        { x: baseX + diagonalProjection, y: baseY },
+                        { x: baseX + diagonalProjection + sideLength, y: baseY },
+                        { x: baseX + octagonSpan, y: baseY + diagonalProjection },
+                        { x: baseX + octagonSpan, y: baseY + diagonalProjection + sideLength },
+                        { x: baseX + diagonalProjection + sideLength, y: baseY + octagonSpan },
+                        { x: baseX + diagonalProjection, y: baseY + octagonSpan },
+                        { x: baseX, y: baseY + diagonalProjection + sideLength }
+                    ];
+
+                    ctx.beginPath();
+                    points.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+                    ctx.closePath();
+                    ctx.fillStyle = data.color;
+                    ctx.fill();
+                    ctx.strokeStyle = '#000';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+
+                    if (data.gameObject) {
+                        const centerX = (points[1].x + points[5].x) / 2;
+                        const centerY = (points[1].y + points[5].y) / 2;
+                        ctx.font = '20px Arial';
+                        ctx.fillStyle = '#000';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText(data.gameObject, centerX, centerY);
+                    }
+                }
+            }
+
+            const squareMap = new Map(roomData.squares.map(s => [s.id, s]));
+            for (let row = 0; row < gridRows - 1; row++) {
+                for (let col = 0; col < gridCols - 1; col++) {
+                    const id = `${row},${col}`;
+                    const color = squareMap.get(id)?.color || 'magenta';
+                    const points = [
+                        { x: col * octagonSpan + padding + octagonSpan, y: row * octagonSpan + padding + diagonalProjection + sideLength },
+                        { x: (col + 1) * octagonSpan + padding + diagonalProjection, y: row * octagonSpan + padding + octagonSpan },
+                        { x: (col + 1) * octagonSpan + padding, y: (row + 1) * octagonSpan + padding + diagonalProjection },
+                        { x: col * octagonSpan + padding + diagonalProjection + sideLength, y: (row + 1) * octagonSpan + padding }
+                    ];
+
+                    ctx.beginPath();
+                    points.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+                    ctx.closePath();
+                    ctx.fillStyle = color;
+                    ctx.fill();
+                    ctx.strokeStyle = '#000';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                }
+            }
+        }
+
+        // Get door color
+        function getDoorColor(state) {
+            return {
+                'Unlocked': 'green',
+                'Locked': 'red',
+                'No Door': 'gray',
+                'Secret': 'yellow'
+            }[state] || 'gray';
+        }
+
+        // Handle player movement with arrow keys
+        document.addEventListener('keydown', (event) => {
+            switch (event.key) {
+                case 'ArrowUp':
+                    movePlayer('north');
+                    break;
+                case 'ArrowDown':
+                    movePlayer('south');
+                    break;
+                case 'ArrowLeft':
+                    movePlayer('west');
+                    break;
+                case 'ArrowRight':
+                    movePlayer('east');
+                    break;
+            }
+        });
+
+        // Start the game
+        init();
+    </script>
+</body>
+</html>
