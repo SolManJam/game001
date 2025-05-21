@@ -1,6 +1,8 @@
 // js/game.js
 console.log("Game.js is loaded and running");
 
+
+
 function checkCoinCollision() {
   const player = document.querySelector('.player');
   if (!player) {

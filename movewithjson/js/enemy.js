@@ -2,6 +2,8 @@
 console.log("Enemy.js is loaded");
 
 let enemies = [];
+let lastEnemyMoveTime = 0;
+const enemyMoveInterval = 1000; // Move every 1 second
 
 function tileToPosition(index) {
   const row = Math.floor((index - 1) / 9);
@@ -25,26 +27,23 @@ function initEnemies(levelData) {
     grid.appendChild(el);
     return {
       el,
-      path: parsePattern(enemy.pattern),
-      currentStep: 0,
       currentTile: enemy.position,
-      moveTimer: 0,
-      moveSpeed: 1000 // 1 second per move
+      path: parsePattern(enemy.pattern),
+      pathIndex: 0
     };
   });
 }
 
 function parsePattern(pattern) {
-  // Simple mock pattern: cycle through directions
-  return ['U', 'L', 'D', 'R'];
+  // Simple default pattern: cycle through directions
+  return pattern ? pattern.split(',').map(step => step.trim()) : ['U', 'L', 'D', 'R'];
 }
 
-function moveEnemies(deltaTime) {
-  enemies.forEach(enemy => {
-    enemy.moveTimer += deltaTime;
-    if (enemy.moveTimer >= enemy.moveSpeed) {
-      enemy.moveTimer -= enemy.moveSpeed;
-      const direction = enemy.path[enemy.currentStep];
+function moveEnemies(timestamp) {
+  if (timestamp - lastEnemyMoveTime >= enemyMoveInterval) {
+    lastEnemyMoveTime = timestamp;
+    enemies.forEach(enemy => {
+      const direction = enemy.path[enemy.pathIndex];
       let newTile = getAdjacentTile(enemy.currentTile, direction);
       if (getTileType(newTile) === 'L002') {
         enemy.currentTile = newTile;
@@ -52,25 +51,20 @@ function moveEnemies(deltaTime) {
         enemy.el.style.left = pos.x + 'px';
         enemy.el.style.top = pos.y + 'px';
       } else {
-        console.log("Enemy cannot move to non-L002 tile:", newTile);
+        console.log("Enemy blocked at tile:", newTile);
       }
-      enemy.currentStep = (enemy.currentStep + 1) % enemy.path.length;
-    }
-  });
+      enemy.pathIndex = (enemy.pathIndex + 1) % enemy.path.length;
+    });
+  }
 }
 
 function getAdjacentTile(tileIndex, direction) {
   switch (direction) {
-    case 'U':
-      return tileIndex > 9 ? tileIndex - 9 : tileIndex; // Stay in grid
-    case 'D':
-      return tileIndex <= 72 ? tileIndex + 9 : tileIndex; // Stay in grid
-    case 'L':
-      return tileIndex % 9 !== 1 ? tileIndex - 1 : tileIndex; // Stay in grid
-    case 'R':
-      return tileIndex % 9 !== 0 ? tileIndex + 1 : tileIndex; // Stay in grid
-    default:
-      return tileIndex;
+    case 'U': return tileIndex > 9 ? tileIndex - 9 : tileIndex;
+    case 'D': return tileIndex <= 72 ? tileIndex + 9 : tileIndex;
+    case 'L': return tileIndex % 9 !== 1 ? tileIndex - 1 : tileIndex;
+    case 'R': return tileIndex % 9 !== 0 ? tileIndex + 1 : tileIndex;
+    default: return tileIndex;
   }
 }
 
