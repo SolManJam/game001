@@ -1,8 +1,17 @@
 // js/game.js
+console.log("Game.js is loaded and running");
+
 function checkCoinCollision() {
   const player = document.querySelector('.player');
+  if (!player) {
+    console.error("Error: .player not found");
+    return;
+  }
   const coins = document.querySelectorAll('.coin');
   totalCoins = coins.length;
+  if (totalCoins > 0) {
+    console.log("Coins found:", totalCoins);
+  }
   coins.forEach(coin => {
     const playerRect = player.getBoundingClientRect();
     const coinRect = coin.getBoundingClientRect();
@@ -12,10 +21,14 @@ function checkCoinCollision() {
       playerRect.y < coinRect.y + coinRect.height &&
       playerRect.y + playerRect.height > coinRect.y
     ) {
+      console.log("Coin collected");
       coin.remove();
       coinCount++;
+      document.querySelector('#coins').textContent = coinCount; // Update UI
       if (coinCount >= totalCoins) {
+        console.log("All coins collected, spawning key");
         spawnKey();
+        document.querySelector('#key').textContent = 'Yes'; // Update UI
       }
     }
   });
@@ -23,6 +36,10 @@ function checkCoinCollision() {
 
 function checkCollisions() {
   const player = document.querySelector('.player');
+  if (!player) {
+    console.error("Error: .player not found");
+    return;
+  }
   const enemies = document.querySelectorAll('.enemy');
   const door = document.querySelector('.door');
   const key = document.querySelector('.key');
@@ -37,9 +54,12 @@ function checkCollisions() {
       playerRect.y < enemyRect.y + enemyRect.height &&
       playerRect.y + playerRect.height > enemyRect.y
     ) {
-      // Game over (adjust as needed)
-      alert('Game Over!');
-      location.reload();
+      console.log("Player hit enemy, game over");
+      document.querySelector('#lives').textContent = parseInt(document.querySelector('#lives').textContent) - 1;
+      if (parseInt(document.querySelector('#lives').textContent) <= 0) {
+        alert('Game Over!');
+        location.reload();
+      }
     }
   });
 
@@ -52,9 +72,11 @@ function checkCollisions() {
       playerRect.x + playerRect.width > keyRect.x &&
       playerRect.y < keyRect.y + keyRect.height &&
       playerRect.y + playerRect.height > keyRect.y
-    ) MOMENTOUS
+    ) {
+      console.log("Key collected");
       hasKey = true;
       key.remove();
+      document.querySelector('#key').textContent = 'Yes'; // Update UI
     }
   }
 
@@ -68,20 +90,36 @@ function checkCollisions() {
       playerRect.y < doorRect.y + doorRect.height &&
       playerRect.y + playerRect.height > doorRect.y
     ) {
-      // Load next level
-      loadLevel(currentLevel + 1);
+      console.log("Door opened, loading next level");
+      document.querySelector('#level-complete').style.display = 'block';
+      setTimeout(() => loadLevel(currentLevel + 1), 2000);
     }
   }
-
+}
 
 function gameLoop() {
+  if (Math.random() < 0.016) {
+    console.log("Game loop running");
+  }
   moveEnemies();
   checkCollisions();
   checkCoinCollision();
   requestAnimationFrame(gameLoop);
 }
 
-// Start game
-let currentLevel = 1;
-loadLevel(currentLevel);
-gameLoop();
+function startGame() {
+  console.log("Starting game, loading level: 1");
+  currentLevel = 1;
+  coinCount = 0;
+  hasKey = false;
+  document.querySelector('#coins').textContent = '0';
+  document.querySelector('#key').textContent = 'No';
+  loadLevel(currentLevel);
+  gameLoop();
+}
+
+// Ensure DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+  console.log("DOM fully loaded, starting game");
+  startGame();
+});

@@ -1,0 +1,126 @@
+/* movewithjson/game.css */
+#game-container {
+  width: 600px;
+  height: 600px;
+  background-color: grey;
+  position: relative;
+  margin: 0 auto;
+  top: 20px;
+}
+
+#grid {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
+.tile {
+  width: 66px;
+  height: 66px;
+  position: absolute;
+  box-sizing: border-box;
+}
+
+.tile.L000 { background-color: green; } /* Un-walkable */
+.tile.L001 { background-color: lightgrey; }
+.tile.L002 { background-color: darkgrey; }
+
+.player::before {
+  content: "😊"; /* Player emoji */
+  font-size: 20px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.player {
+  width: 66px;
+  height: 66px;
+  position: absolute;
+  z-index: 10;
+}
+
+.enemy::before {
+  content: "👾"; /* Enemy emoji */
+  font-size: 20px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.enemy {
+  width: 66px;
+  height: 66px;
+  position: absolute;
+  z-index: 9;
+}
+
+.coin::before {
+  content: "🪙"; /* Coin emoji */
+  font-size: 16px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.coin {
+  width: 66px;
+  height: 66px;
+  position: absolute;
+  z-index: 8;
+}
+
+.door::before {
+  content: "🚪"; /* Door emoji */
+  font-size: 24px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.door {
+  width: 66px;
+  height: 66px;
+  position: absolute;
+  z-index: 7;
+}
+
+.key::before {
+  content: "🗝"; /* Key emoji */
+  font-size: 16px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.key {
+  width: 66px;
+  height: 66px;
+  position: absolute;
+  z-index: 6;
+  display: none; /* Hidden until coins collected */
+}
+
+#info {
+  width: 600px;
+  margin: 30px auto 0; /* Below game-container */
+  color: white;
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+#level-complete {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 24px;
+  z-index: 20;
+}
