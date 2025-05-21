@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grid Game</title>
+    <style>
+        #game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+        #grid {
+            position: relative;
+            width: 454px; /* 9 * 50px + 4px borders */
+            height: 454px;
+            background-color: #ccc;
+        }
+        .cell {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            box-sizing: border-box;
+            border: 1px solid black;
+        }
+        .L000 { background-color: gray; } /* Walls - not walkable */
+        .L001 { background-color: black; } /* Obstacles - not walkable */
+        .L002 { background-color: green; } /* Floor - walkable */
+        #player {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: blue;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            z-index: 2;
+            transition: top 0s, left 0s;
+        }
+        .enemy {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: red;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            z-index: 2;
+        }
+        .coin, .key, .door {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            z-index: 1;
+        }
+        #info {
+            margin-top: 20px;
+        }
+        #message {
+            color: red;
+            font-weight: bold;
+            display: none;
+        }
+        @keyframes flash {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        #level-complete {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            background: white;
+            padding: 20px;
+            z-index: 3;
+        }
+        #pause-button {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div id="grid"></div>
+        <div id="info">
+            <p>Lives: <span id="lives">3</span> <button id="pause-button">Pause</button></p>
+            <p>Coins: <span id="coins">0</span>/<span id="total-coins">0</span> <span id="coin-message" style="color: gold; font-weight: bold; opacity: 0; transition: opacity 0.5s;">Collect All the Coins & Key Will Appear</span></p>
+            <p>Key: <span id="key">No</span></p>
+            <div id="message"></div>
+        </div>
+        <div id="level-complete">Level Complete!</div>
+    </div>
+    <script src="game.js"></script>
+</body>
+</html>

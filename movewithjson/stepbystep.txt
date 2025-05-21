@@ -1,0 +1,18 @@
+Step-by-Step Plan
+
+HTML Structure: Set up the grid and controls.
+
+Generate Grid: Create 81 clickable squares numbered 1 to 81.
+
+Assignment Modes: Let you choose what to assign (player, enemy, etc.).
+
+Store Data: Use a JavaScript object to hold the map data.
+
+Handle Clicks: Assign properties to squares when clicked.
+
+Visual Feedback: Show assignments with colors or labels on the grid.
+
+Save to JSON: Export the map data as a downloadable JSON file.
+
+Load from JSON: Import a JSON file to edit or view a map.
+
